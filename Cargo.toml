@@ -1,0 +1,16 @@
+[package]
+name = "app-menu"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+anyhow = "1.0"
+gtk = { version = "*", package = "gtk4", features = ["v4_8"] }
+once_cell = "1.17.0"
+glob = "0.3.1"
+rust-ini  = "0.18.0"
+
+[build-dependencies]
+glib-build-tools = "0.17.0"
