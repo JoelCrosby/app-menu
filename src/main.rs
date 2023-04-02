@@ -2,10 +2,8 @@ mod app_object;
 mod app_row;
 mod desktop_entry;
 mod reader;
+mod util;
 mod window;
-
-extern crate glob;
-extern crate ini;
 
 use gtk::prelude::*;
 use gtk::{gio, glib, Application};

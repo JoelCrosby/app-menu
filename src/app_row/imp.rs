@@ -2,13 +2,19 @@ use std::cell::RefCell;
 
 use glib::Binding;
 use gtk::subclass::prelude::*;
-use gtk::{glib, CompositeTemplate, Label};
+use gtk::{glib, CompositeTemplate, Image, Label};
 
 #[derive(Default, CompositeTemplate)]
 #[template(resource = "/org/gtk_rs/app_menu/app_row.ui")]
 pub struct AppRow {
     #[template_child]
-    pub content_label: TemplateChild<Label>,
+    pub name_label: TemplateChild<Label>,
+
+    #[template_child]
+    pub description_label: TemplateChild<Label>,
+
+    #[template_child]
+    pub icon_image: TemplateChild<Image>,
 
     pub bindings: RefCell<Vec<Binding>>,
 }

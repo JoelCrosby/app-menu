@@ -1,23 +1,39 @@
 mod imp;
 
 use glib::Object;
-use gtk::glib;
+use gtk::{gio::Icon, glib, subclass::prelude::ObjectSubclassIsExt};
 
 glib::wrapper! {
     pub struct AppObject(ObjectSubclass<imp::AppObject>);
 }
 
 impl AppObject {
-    pub fn new(completed: bool, content: String) -> Self {
+    pub fn new(name: String, description: String, icon: Icon) -> Self {
         Object::builder()
-            .property("completed", completed)
-            .property("content", content)
+            .property("name", name)
+            .property("description", description)
+            .property("icon", icon)
             .build()
+    }
+
+    pub fn search(&self, query: &str) -> bool {
+        self.imp().data.borrow().name.contains(&query)
     }
 }
 
-#[derive(Default)]
+#[derive(Debug)]
 pub struct AppData {
-    pub completed: bool,
-    pub content: String,
+    pub name: String,
+    pub description: String,
+    pub icon: Icon,
+}
+
+impl Default for AppData {
+    fn default() -> Self {
+        Self {
+            name: Default::default(),
+            description: Default::default(),
+            icon: Icon::for_string(&"").unwrap(),
+        }
+    }
 }

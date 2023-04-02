@@ -4,9 +4,9 @@ use anyhow::Result;
 use glib::Object;
 use gtk::prelude::{Cast, CastNone, StaticType};
 use gtk::subclass::prelude::*;
-use gtk::{gio, glib, Application, ListItem, NoSelection, SignalListItemFactory};
+use gtk::{gio, glib, Application, ListItem, SignalListItemFactory, SingleSelection};
 
-use crate::app_object::AppObject;
+use crate::app_object::{AppData, AppObject};
 use crate::app_row::AppRow;
 use crate::reader;
 
@@ -38,19 +38,15 @@ impl Window {
         // Get state and set model
         self.imp().apps.replace(Some(model));
 
-        // Wrap model with selection and pass it to the list view
-        let selection_model = NoSelection::new(Some(self.apps()));
+        // Wrap model with filter and selection and pass it to the list view
+
+        let selection_model = SingleSelection::new(Some(self.apps()));
         self.imp().apps_list.set_model(Some(&selection_model));
     }
 
-    fn new_app(&self, content: String) {
-        // Get content from entry and clear it
-        if content.is_empty() {
-            return;
-        }
-
+    fn new_app(&self, data: AppData) {
         // Add new app to model
-        let app = AppObject::new(false, content);
+        let app = AppObject::new(data.name, data.description, data.icon);
         self.apps().append(&app);
     }
 
@@ -115,4 +111,6 @@ impl Window {
 
         Ok(())
     }
+
+    fn setup_callbacks(&self) {}
 }

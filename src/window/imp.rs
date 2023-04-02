@@ -36,6 +36,7 @@ impl ObjectImpl for Window {
         let obj = self.obj();
         obj.setup_apps();
         obj.setup_factory();
+        obj.setup_callbacks();
 
         obj.poulate().unwrap_or(());
     }

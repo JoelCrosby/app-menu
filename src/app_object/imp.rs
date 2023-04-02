@@ -1,8 +1,10 @@
 use std::cell::RefCell;
 use std::rc::Rc;
 
-use glib::{ParamSpec, ParamSpecBoolean, ParamSpecString, Value};
+use glib::{ParamSpec, ParamSpecString, Value};
+use gtk::gio::Icon;
 use gtk::glib;
+use gtk::glib::ParamSpecObject;
 use gtk::prelude::*;
 use gtk::subclass::prelude::*;
 use once_cell::sync::Lazy;
@@ -24,8 +26,9 @@ impl ObjectImpl for AppObject {
     fn properties() -> &'static [ParamSpec] {
         static PROPERTIES: Lazy<Vec<ParamSpec>> = Lazy::new(|| {
             vec![
-                ParamSpecBoolean::builder("completed").build(),
-                ParamSpecString::builder("content").build(),
+                ParamSpecString::builder("name").build(),
+                ParamSpecString::builder("description").build(),
+                ParamSpecObject::builder::<Icon>("icon").build(),
             ]
         });
         PROPERTIES.as_ref()
@@ -33,15 +36,23 @@ impl ObjectImpl for AppObject {
 
     fn set_property(&self, _id: usize, value: &Value, pspec: &ParamSpec) {
         match pspec.name() {
-            "completed" => {
-                let input_value = value.get().expect("The value needs to be of type `bool`.");
-                self.data.borrow_mut().completed = input_value;
-            }
-            "content" => {
+            "name" => {
                 let input_value = value
                     .get()
                     .expect("The value needs to be of type `String`.");
-                self.data.borrow_mut().content = input_value;
+                self.data.borrow_mut().name = input_value;
+            }
+            "description" => {
+                let input_value = value
+                    .get()
+                    .expect("The value needs to be of type `String`.");
+                self.data.borrow_mut().description = input_value;
+            }
+            "icon" => {
+                let input_value = value
+                    .get()
+                    .expect("The value needs to be of type `String`.");
+                self.data.borrow_mut().icon = input_value;
             }
             _ => unimplemented!(),
         }
@@ -49,8 +60,9 @@ impl ObjectImpl for AppObject {
 
     fn property(&self, _id: usize, pspec: &ParamSpec) -> Value {
         match pspec.name() {
-            "completed" => self.data.borrow().completed.to_value(),
-            "content" => self.data.borrow().content.to_value(),
+            "name" => self.data.borrow().name.to_value(),
+            "description" => self.data.borrow().description.to_value(),
+            "icon" => self.data.borrow().icon.to_value(),
             _ => unimplemented!(),
         }
     }
