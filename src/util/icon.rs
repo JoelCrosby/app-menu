@@ -8,7 +8,7 @@ pub fn get_icon_image(icon: &str) -> Option<Icon> {
         48,
         1,
         TextDirection::None,
-        IconLookupFlags::empty(),
+        IconLookupFlags::PRELOAD,
     );
 
     let icon_name = match icon_info.icon_name() {

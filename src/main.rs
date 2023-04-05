@@ -24,5 +24,6 @@ fn main() -> glib::ExitCode {
 
 fn build_ui(app: &Application) {
     let window = Window::new(app);
+    window.set_decorated(false);
     window.present();
 }

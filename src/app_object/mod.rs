@@ -8,16 +8,18 @@ glib::wrapper! {
 }
 
 impl AppObject {
-    pub fn new(name: String, description: String, icon: Icon) -> Self {
+    pub fn new(data: &AppData) -> Self {
         Object::builder()
-            .property("name", name)
-            .property("description", description)
-            .property("icon", icon)
+            .property("name", &data.name)
+            .property("description", &data.description)
+            .property("icon", &data.icon)
+            .property("exec", &data.exec)
+            .property("seachindex", &data.seachindex)
             .build()
     }
 
     pub fn search(&self, query: &str) -> bool {
-        self.imp().data.borrow().name.contains(&query)
+        self.imp().data.borrow().seachindex.contains(query)
     }
 }
 
@@ -26,6 +28,8 @@ pub struct AppData {
     pub name: String,
     pub description: String,
     pub icon: Icon,
+    pub exec: String,
+    pub seachindex: String,
 }
 
 impl Default for AppData {
@@ -34,6 +38,8 @@ impl Default for AppData {
             name: Default::default(),
             description: Default::default(),
             icon: Icon::for_string(&"").unwrap(),
+            exec: Default::default(),
+            seachindex: Default::default(),
         }
     }
 }

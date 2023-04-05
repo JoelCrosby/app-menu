@@ -2,9 +2,14 @@ mod imp;
 
 use anyhow::Result;
 use glib::Object;
+use gtk::glib::clone;
 use gtk::prelude::{Cast, CastNone, StaticType};
 use gtk::subclass::prelude::*;
-use gtk::{gio, glib, Application, ListItem, SignalListItemFactory, SingleSelection};
+use gtk::traits::EditableExt;
+use gtk::{
+    gio, glib, Adjustment, Application, CustomFilter, FilterListModel, ListItem,
+    SignalListItemFactory, SingleSelection,
+};
 
 use crate::app_object::{AppData, AppObject};
 use crate::app_row::AppRow;
@@ -28,8 +33,8 @@ impl Window {
         self.imp()
             .apps
             .borrow()
-            .clone()
-            .expect("Could not get current apps.")
+            .to_owned()
+            .expect("could not access filter")
     }
 
     fn setup_apps(&self) {
@@ -37,16 +42,27 @@ impl Window {
 
         // Get state and set model
         self.imp().apps.replace(Some(model));
-
-        // Wrap model with filter and selection and pass it to the list view
-
-        let selection_model = SingleSelection::new(Some(self.apps()));
+        let filter_model = FilterListModel::new(Some(self.apps()), self.filter("".to_string()));
+        let selection_model = SingleSelection::new(Some(filter_model.clone()));
         self.imp().apps_list.set_model(Some(&selection_model));
+
+        self.imp()
+            .entry
+            .connect_changed(clone!(@weak self as window => move |entry| {
+                let text = entry.text();
+                let query = text.to_ascii_lowercase();
+                let filter = window.filter(query.to_string());
+
+                filter_model.set_filter(filter.as_ref());
+
+                let adj = Adjustment::builder().value(0.0).build();
+                window.imp().scoll_window.set_vadjustment(Some(&adj));
+            }));
     }
 
-    fn new_app(&self, data: AppData) {
+    fn new_app(&self, data: &AppData) {
         // Add new app to model
-        let app = AppObject::new(data.name, data.description, data.icon);
+        let app = AppObject::new(&data);
         self.apps().append(&app);
     }
 
@@ -103,14 +119,30 @@ impl Window {
     }
 
     fn poulate(&self) -> Result<()> {
-        let entries = reader::read()?;
+        let entries = reader::read_fd()?;
 
-        for entry in entries {
+        for entry in &entries {
             self.new_app(entry);
         }
 
         Ok(())
     }
 
-    fn setup_callbacks(&self) {}
+    fn filter(&self, query: String) -> Option<CustomFilter> {
+        // Create custom filters
+        let query_filter = CustomFilter::new(move |obj| {
+            if query.is_empty() {
+                return true;
+            }
+
+            // Get `AppObject` from `glib::Object`
+            let app_object = obj
+                .downcast_ref::<AppObject>()
+                .expect("The object needs to be of type `AppObject`.");
+
+            app_object.search(&query.as_str())
+        });
+
+        Some(query_filter)
+    }
 }

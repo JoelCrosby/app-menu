@@ -2,7 +2,7 @@ use std::cell::RefCell;
 
 use glib::subclass::InitializingObject;
 use gtk::subclass::prelude::*;
-use gtk::{gio, glib, CompositeTemplate, Entry, ListView};
+use gtk::{gio, glib, CompositeTemplate, Entry, ListView, ScrolledWindow};
 
 #[derive(CompositeTemplate, Default)]
 #[template(resource = "/org/gtk_rs/app_menu/window.ui")]
@@ -11,6 +11,9 @@ pub struct Window {
     pub entry: TemplateChild<Entry>,
     #[template_child]
     pub apps_list: TemplateChild<ListView>,
+    #[template_child]
+    pub scoll_window: TemplateChild<ScrolledWindow>,
+
     pub apps: RefCell<Option<gio::ListStore>>,
 }
 
@@ -36,7 +39,6 @@ impl ObjectImpl for Window {
         let obj = self.obj();
         obj.setup_apps();
         obj.setup_factory();
-        obj.setup_callbacks();
 
         obj.poulate().unwrap_or(());
     }
