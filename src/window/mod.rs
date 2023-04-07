@@ -38,6 +38,8 @@ impl Window {
     }
 
     fn setup_apps(&self) {
+        debug!(target: "app_events", "setup_apps");
+
         let model = gio::ListStore::new(AppObject::static_type());
 
         // Get state and set model
@@ -67,6 +69,8 @@ impl Window {
     }
 
     fn setup_factory(&self) {
+        debug!(target: "app_events", "setup_factory");
+
         // Create a new factory
         let factory = SignalListItemFactory::new();
 
@@ -119,11 +123,15 @@ impl Window {
     }
 
     fn poulate(&self) -> Result<()> {
+        debug!(target: "app_events", "poulate");
+
         let entries = reader::read_fd()?;
 
         for entry in &entries {
             self.new_app(entry);
         }
+
+        debug!(target: "performance", "poulate complete");
 
         Ok(())
     }

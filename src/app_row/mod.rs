@@ -47,9 +47,15 @@ impl AppRow {
         // Save binding
         bindings.push(description_label_binding);
 
+        let icon_prop = if app_object.imp().data.borrow().icon.starts_with("/") {
+            "file"
+        } else {
+            "icon-name"
+        };
+
         // Bind `app_object.name` to `app_row.name_label.label`
         let icon_image_binding = app_object
-            .bind_property("icon", &icon_image, "gicon")
+            .bind_property("icon", &icon_image, icon_prop)
             .flags(BindingFlags::SYNC_CREATE)
             .build();
         // Save binding

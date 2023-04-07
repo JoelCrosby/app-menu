@@ -1,20 +1,23 @@
-use gtk::{gio::Icon, IconLookupFlags, IconTheme, TextDirection};
+use gtk::{IconLookupFlags, IconTheme, TextDirection};
 
-pub fn get_icon_image(icon: &str) -> Option<Icon> {
-    let theme = IconTheme::new();
+pub fn get_icon_image(icon: &str, theme: &IconTheme) -> Option<String> {
+    if icon.contains('/') {
+        return Some(icon.to_string());
+    }
+
     let icon_info = theme.lookup_icon(
         icon,
         &[],
         48,
         1,
         TextDirection::None,
-        IconLookupFlags::PRELOAD,
+        IconLookupFlags::FORCE_REGULAR,
     );
 
     let icon_name = match icon_info.icon_name() {
         Some(i) => i.display().to_string(),
-        None => return None,
+        None => String::new(),
     };
 
-    Icon::for_string(icon_name.as_str()).ok()
+    Some(icon_name)
 }

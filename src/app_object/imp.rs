@@ -2,9 +2,7 @@ use std::cell::RefCell;
 use std::rc::Rc;
 
 use glib::{ParamSpec, ParamSpecString, Value};
-use gtk::gio::Icon;
 use gtk::glib;
-use gtk::glib::ParamSpecObject;
 use gtk::prelude::*;
 use gtk::subclass::prelude::*;
 use once_cell::sync::Lazy;
@@ -28,7 +26,7 @@ impl ObjectImpl for AppObject {
             vec![
                 ParamSpecString::builder("name").build(),
                 ParamSpecString::builder("description").build(),
-                ParamSpecObject::builder::<Icon>("icon").build(),
+                ParamSpecString::builder("icon").build(),
                 ParamSpecString::builder("exec").build(),
                 ParamSpecString::builder("seachindex").build(),
             ]
@@ -51,7 +49,9 @@ impl ObjectImpl for AppObject {
                 self.data.borrow_mut().description = input_value;
             }
             "icon" => {
-                let input_value = value.get().expect("The value needs to be of type `Icon`.");
+                let input_value = value
+                    .get()
+                    .expect("The value needs to be of type `String`.");
                 self.data.borrow_mut().icon = input_value;
             }
             "exec" => {

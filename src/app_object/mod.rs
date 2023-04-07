@@ -1,7 +1,7 @@
 mod imp;
 
 use glib::Object;
-use gtk::{gio::Icon, glib, subclass::prelude::ObjectSubclassIsExt};
+use gtk::{glib, subclass::prelude::ObjectSubclassIsExt};
 
 glib::wrapper! {
     pub struct AppObject(ObjectSubclass<imp::AppObject>);
@@ -27,7 +27,7 @@ impl AppObject {
 pub struct AppData {
     pub name: String,
     pub description: String,
-    pub icon: Icon,
+    pub icon: String,
     pub exec: String,
     pub seachindex: String,
 }
@@ -37,7 +37,7 @@ impl Default for AppData {
         Self {
             name: Default::default(),
             description: Default::default(),
-            icon: Icon::for_string(&"").unwrap(),
+            icon: Default::default(),
             exec: Default::default(),
             seachindex: Default::default(),
         }
