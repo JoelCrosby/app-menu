@@ -4,8 +4,8 @@ use gtk::IconTheme;
 use std::borrow::Cow;
 use std::fs;
 
-use crate::app_object::AppData;
-use crate::util::icon;
+use crate::app_data::AppData;
+use crate::icon;
 
 fn get(value: Option<Cow<str>>) -> String {
     value.map(|e| e.to_string()).unwrap_or_default()
