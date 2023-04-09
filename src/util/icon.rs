@@ -8,10 +8,10 @@ pub fn get_icon_image(icon: &str, theme: &IconTheme) -> Option<String> {
     let icon_info = theme.lookup_icon(
         icon,
         &[],
-        48,
+        0,
         1,
         TextDirection::None,
-        IconLookupFlags::FORCE_REGULAR,
+        IconLookupFlags::PRELOAD,
     );
 
     let icon_name = match icon_info.icon_name() {

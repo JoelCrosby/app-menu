@@ -69,8 +69,6 @@ impl Window {
     }
 
     fn setup_factory(&self) {
-        debug!(target: "app_events", "setup_factory");
-
         // Create a new factory
         let factory = SignalListItemFactory::new();
 

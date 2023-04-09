@@ -3,7 +3,6 @@ extern crate log;
 
 mod app_object;
 mod app_row;
-mod desktop_entry;
 mod reader;
 mod util;
 mod window;

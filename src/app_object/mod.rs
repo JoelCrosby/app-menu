@@ -14,12 +14,11 @@ impl AppObject {
             .property("description", &data.description)
             .property("icon", &data.icon)
             .property("exec", &data.exec)
-            .property("seachindex", &data.seachindex)
             .build()
     }
 
     pub fn search(&self, query: &str) -> bool {
-        self.imp().data.borrow().seachindex.contains(query)
+        self.imp().data.borrow().name.contains(query)
     }
 }
 
@@ -29,7 +28,6 @@ pub struct AppData {
     pub description: String,
     pub icon: String,
     pub exec: String,
-    pub seachindex: String,
 }
 
 impl Default for AppData {
@@ -39,7 +37,6 @@ impl Default for AppData {
             description: Default::default(),
             icon: Default::default(),
             exec: Default::default(),
-            seachindex: Default::default(),
         }
     }
 }

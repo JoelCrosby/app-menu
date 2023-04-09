@@ -58,17 +58,10 @@ pub fn read_fd() -> Result<Vec<AppData>> {
             None => String::new(),
         };
 
-        let seachindex = format!(
-            "{} {}",
-            name.to_ascii_lowercase(),
-            description.to_ascii_lowercase()
-        );
-
         entries.push(AppData {
             name,
             description,
             icon,
-            seachindex,
             exec,
         })
     }

@@ -28,7 +28,6 @@ impl ObjectImpl for AppObject {
                 ParamSpecString::builder("description").build(),
                 ParamSpecString::builder("icon").build(),
                 ParamSpecString::builder("exec").build(),
-                ParamSpecString::builder("seachindex").build(),
             ]
         });
         PROPERTIES.as_ref()
@@ -60,12 +59,6 @@ impl ObjectImpl for AppObject {
                     .expect("The value needs to be of type `String`.");
                 self.data.borrow_mut().exec = input_value;
             }
-            "seachindex" => {
-                let input_value = value
-                    .get()
-                    .expect("The value needs to be of type `String`.");
-                self.data.borrow_mut().seachindex = input_value;
-            }
             _ => unimplemented!(),
         }
     }
@@ -75,7 +68,6 @@ impl ObjectImpl for AppObject {
             "name" => self.data.borrow().name.to_value(),
             "description" => self.data.borrow().description.to_value(),
             "icon" => self.data.borrow().icon.to_value(),
-            "seachindex" => self.data.borrow().seachindex.to_value(),
             _ => unimplemented!(),
         }
     }
