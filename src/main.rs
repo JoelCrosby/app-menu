@@ -36,7 +36,10 @@ fn build_ui(app: &Application) {
         Err(_) => Vec::<AppData>::new(),
     };
 
-    let flow_box = FlowBox::builder().build();
+    let flow_box = FlowBox::builder()
+        .selection_mode(gtk::SelectionMode::Browse)
+        .activate_on_single_click(true)
+        .build();
 
     debug!("start app iter");
 
@@ -47,7 +50,10 @@ fn build_ui(app: &Application) {
 
     debug!("finished app iter");
 
-    let scroller = ScrolledWindow::builder().child(&flow_box).build();
+    let scroller = ScrolledWindow::builder()
+        .vscrollbar_policy(gtk::PolicyType::Automatic)
+        .child(&flow_box)
+        .build();
 
     let window = Window::builder()
         .application(app)
@@ -55,7 +61,6 @@ fn build_ui(app: &Application) {
         .height_request(780)
         .title("App Menu")
         .resizable(false)
-        .modal(true)
         .decorated(false)
         .child(&scroller)
         .build();
