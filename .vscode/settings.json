@@ -7,6 +7,7 @@
     "**/target": true
   },
   "files.watcherExclude": {
-    "**/target": true
+    "**/target": true,
+    "Cargo.lock": true
   }
 }
