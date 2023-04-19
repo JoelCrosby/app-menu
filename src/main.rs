@@ -6,6 +6,7 @@ mod icon;
 mod reader;
 
 use env_logger::{Builder, Env};
+use gtk::glib::{clone, MainContext};
 use gtk::{glib, Application, Box, FlowBox, Image, Label, ScrolledWindow};
 use gtk::{prelude::*, Window};
 
@@ -31,24 +32,10 @@ fn main() -> glib::ExitCode {
 }
 
 fn build_ui(app: &Application) {
-    let apps = match reader::read_fd() {
-        Ok(apps) => apps,
-        Err(_) => Vec::<AppData>::new(),
-    };
-
     let flow_box = FlowBox::builder()
         .selection_mode(gtk::SelectionMode::Browse)
         .activate_on_single_click(true)
         .build();
-
-    debug!("start app iter");
-
-    for app in apps {
-        let row = build_row(&app);
-        flow_box.append(&row);
-    }
-
-    debug!("finished app iter");
 
     let scroller = ScrolledWindow::builder()
         .vscrollbar_policy(gtk::PolicyType::Automatic)
@@ -65,9 +52,27 @@ fn build_ui(app: &Application) {
         .child(&scroller)
         .build();
 
+    window.present();
+
     debug!("present started");
 
-    window.present();
+    let main_context = MainContext::default();
+
+    main_context.spawn_local(clone!(@weak flow_box => async move {
+        debug!("start app iter");
+
+        let apps = match reader::read_fd() {
+            Ok(apps) => apps,
+            Err(_) => Vec::<AppData>::new(),
+        };
+
+        debug!("finished app iter");
+
+        for app in apps {
+            let row = build_row(&app);
+            flow_box.append(&row);
+        }
+    }));
 
     debug!("present finished");
 }
